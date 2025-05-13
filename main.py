@@ -14,7 +14,15 @@ foundObject = 339
 
 #function to print the graph
 def printGraph(objectNum):
-  data = pd.DataFrame(client["ztf"]["snapshot 1"].find({"ssnamenr": str(objectNum)}))
+
+  cursorObj = client["ztf"]["snapshot 1"].find({"ssnamenr": objectNum})
+  lenOfObj = len(list(cursorObj))
+
+  if lenOfObj < 50: 
+    print('not enough measurements')
+    return
+
+  data = pd.DataFrame(client["ztf"]["snapshot 1"].find({"ssnamenr": objectNum}))
   astData = pd.DataFrame(client["ztf"]["snapshot_1_derived_properties"].find({"ssnamenr":str(objectNum)}))
   # Create variables for colored filters
   green = data["fid"] == 1
@@ -73,8 +81,14 @@ def printGraph(objectNum):
   ax[2].set_ylabel("H (mag)")
 
   fig.show()
-  fig.savefig('graph_' + str(i) + '.png')
+  fig.savefig('graph_' + str(objectNum) + '.png')
 
+# get the number of obj greater than 50 
+# def countThingsOverFifty():
+#   client["ztf"]["snapshot 1"].find()
+# LOL we shouldn't need to do this
+
+# main actually running stuff
 printGraph(foundObject)
 
 client.close()
