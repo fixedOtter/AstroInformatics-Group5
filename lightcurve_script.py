@@ -1,5 +1,6 @@
 # THANK YOU ERIN!!!
 
+
 import pymongo
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,7 +8,9 @@ import numpy as np
 
 pmCli = pymongo.MongoClient("mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018")
 
+
 asteroids = [339, 1000]
+
 
 for i in asteroids:
     i = int(i)
@@ -71,4 +74,6 @@ for i in asteroids:
     ax[2].set_ylabel("H (mag)")
 
     fig.show()
+
     fig.savefig('graph_' + str(i) + '.png')
+
