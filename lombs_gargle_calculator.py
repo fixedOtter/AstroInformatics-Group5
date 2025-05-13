@@ -1,66 +1,76 @@
-
-
+# whats being pulled in
 from pymongo import MongoClient
 from astropy.timeseries import LombScargle
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# defining things
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
 
-db = client["ztf"]
+# db = client["ztf"]
+# collection = db["snapshot 1"]
 
-collection = db["snapshot 1"]
-
-astroids = [339]
+astroids = [1865]
 
 
 
 for i in astroids:
-    data = collection.find({"ssnamenr": i})
+    # getting the asteroids from the collection
+    data = client["ztf"]["snapshot 1"].find({"ssnamenr": i})
 
+    # creating arrays for the 
+    #   julian date (t for time)
+    #   magnitude (y)
+    #   uncertainty (dy)
     t = []
     y = []
+    dy = []
 
+    # subract initial value and muliply by 24
 
-
+    # pushing data to the arrays
     for item in data:
-        t.append(item["jd"])
-        y.append(item["H"])
+        t.append(float(item["jd"]))
+        y.append(float(item["H"]))
+        dy.append(item["sigmapsf"])
 
- 
+    minVal = min(t)
 
-    
+    for i in range(len(t)):
+        t[i] = (float(t[i])-minVal)*24
 
-    p_min = 2
+      
+    # translating the period to the frequency
+    p_min = 1
     p_max = 50
     f_min = 1/p_max
     f_max = 1/p_min
+    frequency = np.linspace(f_min, f_max, 1000000)
 
-    frequency = np.linspace(f_min, f_max, 1000)
+    # calculating the L-S with the t and y points and the frequency
+    power = LombScargle(t, y, dy).power(frequency)
 
-    power = LombScargle(t, y).power(frequency)
-
-
-    # index_of_max = np.argmax(power)
-
+    # then putting from frequency back to period - multiplying by two because mike said
     period = [(1/i) * 2 for i in frequency]
     
-
-
-
-
+    # then plotting the data
     plt.plot(period, power)#, label='period', color='blue', linestyle='--')
-    plt.xlim(2, 50)
+    plt.xlim(1, 50)
     plt.title('Periodogram')
     plt.xlabel('period')
     plt.ylabel('power')
-    plt.legend()
+    # plt.legend()
     plt.grid(True)
     plt.show()
 
 
+
+
+    # DO WE NEED!?? I DONT KNOW
+
+    # index_of_max = np.argmax(power)
 
     # max_frequency = frequency[index_of_max]
     # max_power = power[index_of_max]
