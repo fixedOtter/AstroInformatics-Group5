@@ -12,7 +12,7 @@ client = MongoClient(uri)
 # db = client["ztf"]
 # collection = db["snapshot 1"]
 
-astroids = [1865]
+astroids = [15481]
 
 
 

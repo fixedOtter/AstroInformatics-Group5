@@ -10,7 +10,7 @@ import numpy as np
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
 
-foundObject = 339
+foundObject = 1865
 
 #function to print the graph
 def printModuloGraph(objectNum):
@@ -84,23 +84,23 @@ def printModuloGraph(objectNum):
   fig.savefig('graph_' + str(objectNum) + '.png')
 
 # plotting the rotpers we calc over the ones already in snapshot 1
-def printComparisonGraph(arrayOfPDs):
-  for i in arrayOfPDs:
-    trillingsPeriod = client["ztf"]["snapshot_1_derived_properties"].find({"ssnamenr": str(i.ssnamenr)}).rotper
+# def printComparisonGraph(arrayOfPDs):
+#   for i in arrayOfPDs:
+#     trillingsPeriod = client["ztf"]["snapshot_1_derived_properties"].find({"ssnamenr": str(i.ssnamenr)}).rotper
 
 
 
 
 
 
-    # plotting stuff
-    plt.plot(period, power)
-    plt.xlim(2, 50)
-    plt.title('Periodogram')
-    plt.xlabel('period')
-    plt.ylabel('power')
-    plt.grid(True)
-    plt.show()
+#     # plotting stuff
+#     plt.plot(period, power)
+#     plt.xlim(2, 50)
+#     plt.title('Periodogram')
+#     plt.xlabel('period')
+#     plt.ylabel('power')
+#     plt.grid(True)
+#     plt.show()
 
 
 
