@@ -44,6 +44,7 @@ def get_period_and_power_array(ssnamenr):
     #initialize
     t_times = []
     y_magnitudes = []
+    dy_uncertainty = []
 
     #add data to lists
         #jd is julian data
@@ -51,6 +52,7 @@ def get_period_and_power_array(ssnamenr):
     for item in data:
         t_times.append(float(item["jd"]))
         y_magnitudes.append(float(item["H"]))
+        dy_uncertainty.append(item["sigmapsf"])
 
     small_time = min(t_times)
 
@@ -69,7 +71,7 @@ def get_period_and_power_array(ssnamenr):
     frequency = np.linspace(f_min, f_max, 1000)
 
     #calculate power using LobScargle
-    power = LombScargle(t_times, y_magnitudes).power(frequency)
+    power = LombScargle(t_times, y_magnitudes, dy_uncertainty).power(frequency)
 
     #set period array(multiply by 2 to get full rotation)
     period = [(1/i) * 2 for i in frequency]
