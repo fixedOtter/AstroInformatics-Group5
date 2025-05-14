@@ -5,6 +5,7 @@ from astropy.timeseries import LombScargle
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import mpld3
 
 #connect to the database
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
@@ -22,6 +23,7 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array):
     #create arrays
     our_test_array = []
     snapshot_test_array = []
+    label_array = []
 
     #loop through data to test
     for asteriod in test_ssnamenr_array:
@@ -39,16 +41,36 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array):
         #add test periods to output arrays
         our_test_array.append(test_period)
         snapshot_test_array.append(data_period)
+        label_array.append(asteriod["ssnamenr"])
 
     #create comparison scatter plot
-    plt.scatter(our_test_array, snapshot_test_array)
-    plt.xlim(2, 50)
-    plt.title(f'Similarity test')
-    plt.xlabel('PD 2024')
-    plt.ylabel('PD 2023')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+    # fig = plt.scatter(our_test_array, snapshot_test_array)
+    fig, ax = plt.subplots(subplot_kw=dict(facecolor='#EEEEEE'))
+
+    scatter = ax.scatter(our_test_array, snapshot_test_array)
+    ax.set_title('Comparison of Asteroid Periods')
+    ax.set_xlabel('Our Test Periods')
+    ax.set_ylabel('Snapshot 1 Derived Properties Periods')
+    ax.set_xlim(0, 50)
+    ax.grid(True)
+
+
+    # for index in range(len(our_test_array)):
+    #     plt.annotate(label_array[index], (our_test_array[index], our_test_array[index]))
+
+    tooltip = mpld3.plugins.PointLabelTooltip(scatter, labels=label_array)
+    mpld3.plugins.connect(fig, tooltip)
+    mpld3.save_html(fig, "scatter_plot.html")
+        
+    
+
+    # plt.xlim(2, 50)
+    # plt.title(f'Similarity test')
+    # plt.xlabel('PD 2024')
+    # plt.ylabel('PD 2023')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
 
     
 
