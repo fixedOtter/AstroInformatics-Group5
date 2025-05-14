@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.png
 .DS_Store
+scatter_plot.html
 
 # C extensions
 *.so
