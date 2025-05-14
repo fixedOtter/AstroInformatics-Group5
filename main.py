@@ -30,7 +30,7 @@ def run_comparison():
   #select the collection
   collection = db["snapshot 1"]
 
-  test_asteroids = collection.find({}).limit(50)
+  test_asteroids = collection.find({}).limit(13)
 
   for item in test_asteroids:
     #print(item["ssnamenr"])
@@ -40,7 +40,7 @@ def run_comparison():
 
   #get output array of the periods of inputted asteroids using snapshot 1
   out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)#asteroids)
-  print("Out array: ", out_array)
+  # print("Out array: ", out_array)
 
   lgc_time_end = time.time()
   lgc_time = lgc_time_end - lgc_time_start

@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import mpld3
+import os
 
 #connect to the database
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
@@ -70,16 +71,9 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array):
     mpld3.save_html(fig, "scatter_plot.html")
         
     
-    print("Our test periods: ", our_test_array)
-    print("Snapshot 1 derived properties periods: ", snapshot_test_array)
+    print("Our test periods size: ", len(our_test_array))
+    print("Snapshot 1 derived properties periods size: ", len(snapshot_test_array))
 
-    # plt.xlim(2, 50)
-    # plt.title(f'Similarity test')
-    # plt.xlabel('PD 2024')
-    # plt.ylabel('PD 2023')
-    # plt.legend()
-    # plt.grid(True)
-    # plt.show()
 
     
 
