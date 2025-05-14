@@ -11,20 +11,20 @@ collection = db["snapshot 2"]
 
 
 
-def check_for_SSR(asteroids_potentials):
+def check_for_SSR(output_array):
     
     Potential_SSR= []
     
-    for item in asteroids_potentials: 
+    for item in output_array: 
     
-        test_ssr = item["ssnamenr"]
-        test_period = item["period"]
+        ssr = item["ssnamenr"]
+        period = item["period"]
 
-        if  1000 <= test_period <= 5000: 
-            Potential_SSR.append(test_ssr)
+        if  1000 <= period <= 5000: 
+            Potential_SSR.append(output_array)
     print(Potential_SSR)
     return Potential_SSR
-# list_asteroids = [{"ssnamenr": "500", "period":2000}, {"ssnamenr": "700", "period":776}, {"ssnamenr": "1000", "period":4444}]
+
                   
 
 
