@@ -29,7 +29,6 @@ def run_comparison():
 
   return
 
-run_comparison()
 
 #function to print the graph
 def printGraph(objectNum):
@@ -107,7 +106,15 @@ def printGraph(objectNum):
 #   client["ztf"]["snapshot 1"].find()
 # LOL we shouldn't need to do this
 
-# main actually running stuff
-printGraph(foundObject)
 
-client.close()
+if (__name__ == "__main__"):
+
+  option = "compare"
+
+  if option == "compare":
+    run_comparison()
+  elif option == "graph":
+  # main actually running stuff
+    printGraph(foundObject)
+
+    client.close()
