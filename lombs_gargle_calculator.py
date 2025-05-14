@@ -13,7 +13,7 @@ client = MongoClient(uri)
 db = client["ztf"]
 
 #select the collection
-collection = db["snapshot 1"]
+collection = db["snapshot 2"]
 
 #function to get the ssnamenr and period for a given list of asteroids
 def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
@@ -121,4 +121,10 @@ if __name__ == "__main__":
 
     print(out_array)
     createPlot(astroids[0], out_array[0]["period"])
+
+
+# list of all possible slow rotators
+# Criterion  1-5K
+
+
 
