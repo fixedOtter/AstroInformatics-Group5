@@ -14,7 +14,7 @@ client = MongoClient(uri)
 db = client["ztf"]
 
 #select the collection
-collection = db["snapshot 1"]
+collection = db["snapshot 2"]
 
 #number of cpus to use
 num_cpus = 128
@@ -137,4 +137,10 @@ if __name__ == "__main__":
 
     print(out_array)
     createPlot(astroids[0], db, out_array[0]["period"])
+
+
+# list of all possible slow rotators
+# Criterion  1-5K
+
+
 
