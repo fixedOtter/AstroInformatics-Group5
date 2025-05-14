@@ -1,5 +1,4 @@
-
-
+# whats being pulled in
 from pymongo import MongoClient
 from astropy.timeseries import LombScargle
 import numpy as np
@@ -80,6 +79,7 @@ def get_period_and_power_array(ssnamenr):
     p_max = 416.66
     f_min = 1/p_max
     f_max = 1/p_min
+    frequency = np.linspace(f_min, f_max, 1000000)
 
 
     #sets frequency range and spread
@@ -104,7 +104,7 @@ def createPlot(ssnamenr, max_period = -1):
     plt.title(f'Periodogram {ssnamenr}')
     plt.xlabel('period')
     plt.ylabel('power')
-    plt.legend()
+    # plt.legend()
     plt.grid(True)
 
     #plot the max period if it is not -1

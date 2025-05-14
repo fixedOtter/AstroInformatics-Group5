@@ -13,7 +13,7 @@ import comparison as compare
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
 
-foundObject = 339
+foundObject = 1865
 
 
 def run_comparison():
@@ -31,7 +31,7 @@ def run_comparison():
 
 
 #function to print the graph
-def printGraph(objectNum):
+def printModuloGraph(objectNum):
 
   cursorObj = client["ztf"]["snapshot 1"].find({"ssnamenr": objectNum})
   lenOfObj = len(list(cursorObj))
@@ -101,10 +101,31 @@ def printGraph(objectNum):
   fig.show()
   fig.savefig('graph_' + str(objectNum) + '.png')
 
-# get the number of obj greater than 50 
-# def countThingsOverFifty():
-#   client["ztf"]["snapshot 1"].find()
-# LOL we shouldn't need to do this
+# plotting the rotpers we calc over the ones already in snapshot 1
+# def printComparisonGraph(arrayOfPDs):
+#   for i in arrayOfPDs:
+#     trillingsPeriod = client["ztf"]["snapshot_1_derived_properties"].find({"ssnamenr": str(i.ssnamenr)}).rotper
+
+
+
+
+
+
+#     # plotting stuff
+#     plt.plot(period, power)
+#     plt.xlim(2, 50)
+#     plt.title('Periodogram')
+#     plt.xlabel('period')
+#     plt.ylabel('power')
+#     plt.grid(True)
+#     plt.show()
+
+
+
+
+# main actually running stuff
+# printModuloGraph(foundObject)
+
 
 
 if (__name__ == "__main__"):
@@ -115,6 +136,6 @@ if (__name__ == "__main__"):
     run_comparison()
   elif option == "graph":
   # main actually running stuff
-    printGraph(foundObject)
+    printModuloGraph(foundObject)
 
     client.close()
