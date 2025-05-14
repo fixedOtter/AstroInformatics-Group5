@@ -4,55 +4,44 @@ from astropy.timeseries import LombScargle
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import threading
+from multiprocessing.pool import ThreadPool
 
+uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
+client = MongoClient(uri)
 
+#select the database
+db = client["ztf"]
+
+#select the collection
+collection = db["snapshot 1"]
 
 #function to get the ssnamenr and period for a given list of asteroids
-def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, collection):
+def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
 
-
+    pool = ThreadPool()
     out_array = []
-    #if no asteroids are given, return all asteroids
-    if (asteriods_ssnamenr == None):
-        #get the first 50 asteroids in the collection
-        test_asteroids = collection.find({}).limit(50)
-        #if no asteroids are given, return all asteroids
-        
+
+    #loop through each asteroid in the list
+    for ssnamenr in asteriods_ssnamenr:
         #get the period and power array for the asteroid
-        for test_asteroid in test_asteroids:
-            power_array, period_array, _ = get_period_and_power_array(ssnamenr=test_asteroid["ssnamenr"], collection=collection)
+        power_array, period_array, _ = get_period_and_power_array(ssnamenr)
         
-            #find the max power and period
-            max_power_index = np.argmax(power_array)
-            max_period = period_array[max_power_index]
+        
+        #find the max power and period
+        max_power_index = np.argmax(power_array)
+        max_period = period_array[max_power_index]
 
-            #add the max period with the associated ssnamenr to the output array
-            out_array.append({"ssnamenr": test_asteroid["ssnamenr"], "period": float(max_period)})
-            print("Fully calculated period for ssnamenr: ", test_asteroid["ssnamenr"])
+        #add the max period with the associated ssnamenr to the output array
+        out_array.append({"ssnamenr": ssnamenr, "period": float(max_period)})
+        print("Fully calculated period for ssnamenr: ", ssnamenr)
 
-
-    else:
-
-        #loop through each asteroid in the list
-        for ssnamenr in asteriods_ssnamenr:
-            #get the period and power array for the asteroid
-            power_array, period_array, _ = get_period_and_power_array(ssnamenr, collection=collection)
-            
-            #find the max power and period
-            max_power_index = np.argmax(power_array)
-            max_period = period_array[max_power_index]
-
-
-            #add the max period with the associated ssnamenr to the output array
-            out_array.append({"ssnamenr": ssnamenr, "period": float(max_period)})
-            print("Fully calculated period for ssnamenr: ", ssnamenr)
-
-
+    pool.close()
     #return the out_array
     return out_array
 
 #returns the period and power array for a given ssnamenr
-def get_period_and_power_array(ssnamenr, collection):
+def get_period_and_power_array(ssnamenr):
     #get all data associated with asteroid
     data = collection.find({"ssnamenr": ssnamenr})
 
@@ -135,19 +124,19 @@ def createPlot(ssnamenr, db, max_period = -1):
 
 if __name__ == "__main__":
     #connect to the database
-    uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
-    client = MongoClient(uri)
+    # uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
+    # client = MongoClient(uri)
 
-    #select the database
-    db = client["ztf"]
+    # #select the database
+    # db = client["ztf"]
 
-    #select the collection
-    collection = db["snapshot 1"]
+    # #select the collection
+    # collection = db["snapshot 1"]
 
     astroids = [12345]#,685, 243]
 
     #get the period and power array for each asteroid
-    out_array = get_ssr_candidate_ssnamenr_and_period(astroids, collection)
+    out_array = get_ssr_candidate_ssnamenr_and_period(astroids)
 
     print(out_array)
     createPlot(astroids[0], db, out_array[0]["period"])

@@ -7,17 +7,17 @@ import pandas as pd
 import mpld3
 
 #connect to the database
-# uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
-# client = MongoClient(uri)
+uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
+client = MongoClient(uri)
 
-# #select the database
-# db = client["ztf"]
+#select the database
+db = client["ztf"]
 
-# #select the collection
-# collection = db["snapshot_1_derived_properties"]
+#select the collection
+collection = db["snapshot_1_derived_properties"]
 
 #compare asteriods we tested with others
-def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, collection):
+def compare_ssnamenr_asteriod_periods(test_ssnamenr_array):
 
     #create arrays
     our_test_array = []
