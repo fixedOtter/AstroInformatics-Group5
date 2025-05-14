@@ -14,10 +14,10 @@ client = MongoClient(uri)
 db = client["ztf"]
 
 #select the collection
-collection = db["snapshot 2"]
+collection = db["snapshot 1"]
 
 #number of cpus to use
-num_cpus = 128
+num_cpus = 8
 
 if os.cpu_count() < num_cpus:
     num_cpus = os.cpu_count()
@@ -33,6 +33,10 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
         # call the function for each item concurrently
         for result in pool.map(get_period_and_power_array, asteriods_ssnamenr):
             power_array, period_array, _, ssnamenr = result
+            
+            if (power_array is None or period_array is None):
+                print("No data found for ssnamenr: ", ssnamenr)
+                continue
 
             #find the max power and period
             max_power_index = np.argmax(power_array)
@@ -51,6 +55,10 @@ def get_period_and_power_array(ssnamenr):
     #get all data associated with asteroid
     data = collection.find({"ssnamenr": ssnamenr})
 
+    if (data == None):
+        print("No data found for ssnamenr: ", ssnamenr)
+        return None, None, None, ssnamenr
+
     #initialize
     t_times_green = []
     y_magnitudes_green = []
@@ -67,6 +75,10 @@ def get_period_and_power_array(ssnamenr):
         elif (item["fid"] == 2):
             t_times_red.append(float(item["jd"]))
             y_magnitudes_red.append(float(item["H"]))
+    
+    if (len(t_times_green) == 0 or len(t_times_red) == 0):
+        print("No data read for ssnamenr: ", ssnamenr)
+        return None, None, None, ssnamenr
 
     #find mean difference between the two filters
     #this is used to normalize the data
