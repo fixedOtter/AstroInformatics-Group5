@@ -9,6 +9,8 @@ import numpy as np
 import lombs_gargle_calculator as lgc
 import comparison as compare
 
+import time
+
 # constants of integration
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
@@ -19,13 +21,41 @@ foundObject = 1865
 def run_comparison():
 
   #test asteroids
-  asteroids = [339, 1865, 517]
+  # asteroids = [339, 1865, 12345]
+  asteroids = []
 
-  #get output array of the periods of inputted asteroids
-  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)
+  #select the database
+  db = client["ztf"]
 
-  #create comparison graph
+  #select the collection
+  collection = db["snapshot 1"]
+
+  test_asteroids = collection.find({}).limit(50)
+
+  for item in test_asteroids:
+    #print(item["ssnamenr"])
+    asteroids.append(item["ssnamenr"])
+  
+  lgc_time_start = time.time()
+
+  #get output array of the periods of inputted asteroids using snapshot 1
+  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)#asteroids)
+  print("Out array: ", out_array)
+
+  lgc_time_end = time.time()
+  lgc_time = lgc_time_end - lgc_time_start
+
+
+  compare_time_start = time.time()
+
+  #create comparison graph using snapshot_1_derived_properties
   compare.compare_ssnamenr_asteriod_periods(out_array)
+
+  compare_time_end = time.time()
+  compare_time = compare_time_end - compare_time_start
+
+  print("LombScargle time: ", lgc_time)
+  print("Comparison time: ", compare_time)
 
   return
 
