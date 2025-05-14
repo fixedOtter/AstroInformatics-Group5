@@ -4,7 +4,7 @@ from astropy.timeseries import LombScargle
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import threading
+import os
 from multiprocessing.pool import ThreadPool
 
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
@@ -19,29 +19,48 @@ collection = db["snapshot 1"]
 #function to get the ssnamenr and period for a given list of asteroids
 def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
 
-    pool = ThreadPool()
     out_array = []
 
-    #loop through each asteroid in the list
-    for ssnamenr in asteriods_ssnamenr:
-        #get the period and power array for the asteroid
-        power_array, period_array, _ = get_period_and_power_array(ssnamenr)
+
+    num_cpus = 4
+
+    if os.cpu_count() < num_cpus:
+        num_cpus = os.cpu_count()
+
+    # create a thread pool
+    with ThreadPool(num_cpus) as pool:
+        # call the function for each item concurrently
+        for result in pool.map(get_period_and_power_array, asteriods_ssnamenr):
+            power_array, period_array, _, ssnamenr = result
+
+            #find the max power and period
+            max_power_index = np.argmax(power_array)
+            max_period = period_array[max_power_index]
+
+            #add the max period with the associated ssnamenr to the output array
+            out_array.append({"ssnamenr": ssnamenr, "period": float(max_period)})
+            print("Fully calculated period for ssnamenr: ", ssnamenr)
+
+    # #loop through each asteroid in the list
+    # for ssnamenr in asteriods_ssnamenr:
+    #     #get the period and power array for the asteroid
+    #     power_array, period_array, _ = get_period_and_power_array(ssnamenr)
         
         
-        #find the max power and period
-        max_power_index = np.argmax(power_array)
-        max_period = period_array[max_power_index]
+    #     #find the max power and period
+    #     max_power_index = np.argmax(power_array)
+    #     max_period = period_array[max_power_index]
 
-        #add the max period with the associated ssnamenr to the output array
-        out_array.append({"ssnamenr": ssnamenr, "period": float(max_period)})
-        print("Fully calculated period for ssnamenr: ", ssnamenr)
+    #     #add the max period with the associated ssnamenr to the output array
+    #     out_array.append({"ssnamenr": ssnamenr, "period": float(max_period)})
+    #     print("Fully calculated period for ssnamenr: ", ssnamenr)
 
-    pool.close()
     #return the out_array
     return out_array
 
 #returns the period and power array for a given ssnamenr
 def get_period_and_power_array(ssnamenr):
+    print("Calculating period for ssnamenr: ", ssnamenr)
     #get all data associated with asteroid
     data = collection.find({"ssnamenr": ssnamenr})
 
@@ -101,7 +120,7 @@ def get_period_and_power_array(ssnamenr):
     period = [(1/i) * 2 for i in frequency]
 
     #return power array and period array
-    return power, period, frequency
+    return power, period, frequency, ssnamenr
 
 def createPlot(ssnamenr, db, max_period = -1):
     #get the period and power array for a given ssnamenr
