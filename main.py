@@ -11,6 +11,8 @@ import comparison as compare
 
 import time
 
+import potential_SSR as pSSR
+
 # constants of integration
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
@@ -21,7 +23,6 @@ foundObject = 1865
 def run_comparison():
 
   #test asteroids
-  # asteroids = [339, 1865, 12345]
   asteroids = []
 
   #select the database
@@ -30,7 +31,9 @@ def run_comparison():
   #select the collection
   collection = db["snapshot 1"]
 
-  test_asteroids = collection.find({}).limit(50)
+
+  #Get all test asteroids
+  test_asteroids = collection.find({}).limit(15)
 
   for item in test_asteroids:
     #print(item["ssnamenr"])
@@ -39,23 +42,38 @@ def run_comparison():
   lgc_time_start = time.time()
 
   #get output array of the periods of inputted asteroids using snapshot 1
-  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)#asteroids)
-  print("Out array: ", out_array)
+  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)
+  # print("Out array: ", out_array)
 
   lgc_time_end = time.time()
   lgc_time = lgc_time_end - lgc_time_start
+
+  possible_SSRs_start = time.time()
+  possible_SSRs = pSSR.check_for_SSR(out_array)
+  possible_SSRs_end = time.time() - possible_SSRs_start
+  
+  with open("potential_SSR.txt", "w") as f:
+    for ssr in possible_SSRs:
+      f.write(str(ssr) + "\n")
 
 
   compare_time_start = time.time()
 
   #create comparison graph using snapshot_1_derived_properties
-  compare.compare_ssnamenr_asteriod_periods(out_array)
+  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True)
 
   compare_time_end = time.time()
   compare_time = compare_time_end - compare_time_start
 
   print("LombScargle time: ", lgc_time)
   print("Comparison time: ", compare_time)
+  print("Possible SSRs time: ", possible_SSRs_end)
+  print("Total time: ", lgc_time + compare_time + possible_SSRs_end)
+
+  with open("test_arrays.txt", "w") as f:
+    f.write(f"ssnamenr Our_Period Snaps_Period\n")
+    for index in range(len(our_test_array)):
+      f.write(f"{label_array[index]} {our_test_array[index]} {snapshot_test_array[index]}\n")
 
   return
 
