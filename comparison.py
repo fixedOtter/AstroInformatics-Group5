@@ -18,7 +18,7 @@ db = client["ztf"]
 collection = db["snapshot_1_derived_properties"]
 
 #compare asteriods we tested with others
-def compare_ssnamenr_asteriod_periods(test_ssnamenr_array):
+def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = False):
 
     #create arrays
     our_test_array = []
@@ -50,6 +50,14 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array):
         if (data_period > max_period):
             max_period = data_period
 
+    print("Our test periods size: ", len(our_test_array))
+    print("Snapshot 1 derived properties periods size: ", len(snapshot_test_array))
+    
+    if (output_diagram == False):
+        return our_test_array, snapshot_test_array, label_array
+    
+    
+    
     #create comparison scatter plot
     # fig = plt.scatter(our_test_array, snapshot_test_array)
     fig, ax = plt.subplots(subplot_kw=dict(facecolor='#EEEEEE'))
@@ -69,10 +77,10 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array):
 
     # Save the figure as an HTML file
     mpld3.save_html(fig, "scatter_plot.html")
+
+    return our_test_array, snapshot_test_array, label_array
         
     
-    print("Our test periods size: ", len(our_test_array))
-    print("Snapshot 1 derived properties periods size: ", len(snapshot_test_array))
 
 
     
