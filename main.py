@@ -6,11 +6,29 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+import lombs_gargle_calculator as lgc
+import comparison as compare
+
 # constants of integration
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
 
 foundObject = 339
+
+
+def run_comparison():
+
+  #test asteroids
+  asteroids = [339, 1865, 517]
+
+  #get output array of the periods of inputted asteroids
+  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)
+
+  #create comparison graph
+  compare.compare_ssnamenr_asteriod_periods(out_array)
+
+  return
+
 
 #function to print the graph
 def printGraph(objectNum):
@@ -88,7 +106,15 @@ def printGraph(objectNum):
 #   client["ztf"]["snapshot 1"].find()
 # LOL we shouldn't need to do this
 
-# main actually running stuff
-printGraph(foundObject)
 
-client.close()
+if (__name__ == "__main__"):
+
+  option = "compare"
+
+  if option == "compare":
+    run_comparison()
+  elif option == "graph":
+  # main actually running stuff
+    printGraph(foundObject)
+
+    client.close()
