@@ -9,15 +9,18 @@ import pandas as pd
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
 
+
+# the database is equal to the ztf folder within client variable 
 db = client["ztf"]
 
+# the collection variable is looking at the snapshot 1 date within the db variable 
 collection = db["snapshot 1"]
 
-astroids = [339]
+asteroids = [997]
 
 
-
-for i in astroids:
+# iterating throught the variable asteroids 
+for i in asteroids:
     data = collection.find({"ssnamenr": i})
 
     t = []
