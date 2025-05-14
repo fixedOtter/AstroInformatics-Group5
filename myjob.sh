@@ -4,10 +4,11 @@
 #SBATCH --time=6:00				# 20 min, shorter time, quicker start, max run time 
 #SBATCH --chdir=/scratch/gj392			# your work directory
 #SBATCH --mem=1000                              # 2GB of memory
+#SBATCH --cpus-per-task=2			# i guess -c 2 would do the same thing
 
-# load a module, for example
-# module load anaconda3
+# pulling in anaconda module & then activating the conda environment
+module load anaconda3
+conda activate astroinformatics
 
-# run your application, precede the application command with srun
-# a couple example applications ...
-srun something.py
+# goes and run the main.py file from local dir
+srun ./main.py
