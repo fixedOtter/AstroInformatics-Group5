@@ -128,9 +128,13 @@ def createPlot(ssnamenr, db, max_period = -1):
     plt.show()
 
 if __name__ == "__main__":
+<<<<<<< HEAD
+    astroids = [2430]#,685, 243]
+=======
     
     #This is just test files
     astroids = [12345,685, 243]
+>>>>>>> main
 
     #get the period and power array for each asteroid
     out_array = get_ssr_candidate_ssnamenr_and_period(astroids)
