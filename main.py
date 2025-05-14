@@ -19,13 +19,22 @@ foundObject = 1865
 def run_comparison():
 
   #test asteroids
-  asteroids = [339, 1865, 517]
+  asteroids = [339, 1865, 12345]
 
-  #get output array of the periods of inputted asteroids
-  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)
+  #select the database
+  db = client["ztf"]
 
-  #create comparison graph
-  compare.compare_ssnamenr_asteriod_periods(out_array)
+  #select the collection
+  collection = db["snapshot 1"]
+
+  #get output array of the periods of inputted asteroids using snapshot 1
+  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids, collection)#asteroids)
+  print("Out array: ", out_array)
+
+  collection = db["snapshot_1_derived_properties"]
+
+  #create comparison graph using snapshot_1_derived_properties
+  compare.compare_ssnamenr_asteriod_periods(out_array, collection)
 
   return
 
