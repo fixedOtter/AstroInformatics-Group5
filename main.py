@@ -5,6 +5,7 @@ from pymongo import MongoClient
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 import lombs_gargle_calculator as lgc
 import comparison as compare
@@ -20,7 +21,7 @@ client = MongoClient(uri)
 foundObject = 1865
 
 
-def run_comparison():
+def run_comparison(slice_block):
 
   #test asteroids
   asteroids = []
@@ -33,7 +34,7 @@ def run_comparison():
 
 
   #Get all test asteroids
-  test_asteroids = collection.find({}).limit(15)
+  test_asteroids = collection.find({}).limit(1000).skip(slice_block * 1000)
 
   for item in test_asteroids:
     #print(item["ssnamenr"])
@@ -153,11 +154,18 @@ def printModuloGraph(objectNum):
 # main actually running stuff
 # printModuloGraph(foundObject)
 if (__name__ == "__main__"):
+  slice_block = 0
+
+  if (len(sys.argv) != 2):
+    print("Slice number not provided, exiting")
+    sys.exit(1)
+
+  slice_block = int(sys.argv[1])
 
   option = "compare"
 
   if option == "compare":
-    run_comparison()
+    run_comparison(slice_block)
   elif option == "graph":
   # main actually running stuff
     printModuloGraph(foundObject)
