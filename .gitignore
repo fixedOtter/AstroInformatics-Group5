@@ -1,3 +1,9 @@
+#log files
+*.txt
+*.log
+scatter_plot.html
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -5,7 +5,7 @@
 #SBATCH --time=30:00				# 20 min, shorter time, quicker start, max run time 
 #SBATCH --chdir=/scratch/gj392			# your work directory
 #SBATCH --mem=6000                              # 2GB of memory
-#SBATCH --cpus-per-task=4			# i guess -c 4 would do the same thing
+#SBATCH --cpus-per-task=8			# i guess -c 4 would do the same thing
 
 # pulling in anaconda module & then activating the conda environment
 module load anaconda3
