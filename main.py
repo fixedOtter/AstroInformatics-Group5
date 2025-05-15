@@ -58,7 +58,7 @@ def run_comparison(slice_block):
   
   with open(f"potential_SSR_{slice_block}.log", "w") as f:
     for ssr in possible_SSRs:
-      f.write( ssr["ssnamenr"]  + " " + ssr["period"] + "\n")
+       f.write(str(ssr) + "\n")
 
 
   compare_time_start = time.time()
