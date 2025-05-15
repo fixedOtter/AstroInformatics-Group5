@@ -5,6 +5,7 @@ from pymongo import MongoClient
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 import lombs_gargle_calculator as lgc
 import comparison as compare
@@ -20,7 +21,7 @@ client = MongoClient(uri)
 foundObject = 1865
 
 
-def run_comparison():
+def run_comparison(slice_block):
 
   #test asteroids
   asteroids = []
@@ -29,15 +30,17 @@ def run_comparison():
   db = client["ztf"]
 
   #select the collection
-  collection = db["snapshot 1"]
+  collection = db["snapshot_1"]
 
+  collection_der = db["snapshot_1_derived_properties"]
 
   #Get all test asteroids
-  test_asteroids = collection.find({}).limit(15)
+  test_asteroids = collection_der.find({}).limit(1000).skip(slice_block * 1000)
 
   for item in test_asteroids:
     #print(item["ssnamenr"])
-    asteroids.append(item["ssnamenr"])
+    if item != None:
+      asteroids.append(int(item["ssnamenr"]))
   
   lgc_time_start = time.time()
 
@@ -48,19 +51,20 @@ def run_comparison():
   lgc_time_end = time.time()
   lgc_time = lgc_time_end - lgc_time_start
 
+  #add timings
   possible_SSRs_start = time.time()
   possible_SSRs = pSSR.check_for_SSR(out_array)
   possible_SSRs_end = time.time() - possible_SSRs_start
   
-  with open("potential_SSR.txt", "w") as f:
+  with open(f"potential_SSR_{slice_block}.log", "w") as f:
     for ssr in possible_SSRs:
-      f.write(str(ssr) + "\n")
+       f.write(str(ssr) + "\n")
 
 
   compare_time_start = time.time()
 
   #create comparison graph using snapshot_1_derived_properties
-  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True)
+  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True, slice_block)
 
   compare_time_end = time.time()
   compare_time = compare_time_end - compare_time_start
@@ -70,7 +74,7 @@ def run_comparison():
   print("Possible SSRs time: ", possible_SSRs_end)
   print("Total time: ", lgc_time + compare_time + possible_SSRs_end)
 
-  with open("test_arrays.txt", "w") as f:
+  with open(f"test_arrays_{slice_block}.log", "w") as f:
     f.write(f"ssnamenr Our_Period Snaps_Period\n")
     for index in range(len(our_test_array)):
       f.write(f"{label_array[index]} {our_test_array[index]} {snapshot_test_array[index]}\n")
@@ -153,11 +157,19 @@ def printModuloGraph(objectNum):
 # main actually running stuff
 # printModuloGraph(foundObject)
 if (__name__ == "__main__"):
+  slice_block = 0
+
+  if (len(sys.argv) != 2):
+    print("Slice number not provided, exiting")
+    sys.exit(1)
+
+  #gets the size of the slice block
+  slice_block = int(sys.argv[1])
 
   option = "compare"
 
   if option == "compare":
-    run_comparison()
+    run_comparison(slice_block)
   elif option == "graph":
   # main actually running stuff
     printModuloGraph(foundObject)
