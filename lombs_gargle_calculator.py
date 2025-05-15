@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
-from multiprocessing.pool import ThreadPool
+from concurrent.futures import ProcessPoolExecutor
 
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
@@ -29,7 +29,7 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
     #get the number of cpus
     print("Number of CPUs: ", num_cpus)
     # create a thread pool
-    with ThreadPool(num_cpus) as pool:
+    with ProcessPoolExecutor(num_cpus) as pool:
         # call the function for each item concurrently
         for result in pool.map(get_period_and_power_array, asteriods_ssnamenr):
             power_array, period_array, _, ssnamenr = result
@@ -59,7 +59,7 @@ def get_period_and_power_array(ssnamenr):
         print("No data found for ssnamenr: ", ssnamenr)
         return None, None, None, ssnamenr
 
-    #initialize
+    #initialize arrays
     t_times_green = []
     y_magnitudes_green = []
     t_times_red = []
@@ -104,8 +104,10 @@ def get_period_and_power_array(ssnamenr):
         t_times[i] = (float(t_times[i]) - small_time) * 24
 
     #calculate frequency min and max from period min and max
+    #1 hour
     p_min = .0416
-    p_max = 416.66
+    #5000 hours
+    p_max = 4166.6#416.66
     f_min = 1/p_max
     f_max = 1/p_min
 
@@ -117,6 +119,15 @@ def get_period_and_power_array(ssnamenr):
 
     #set period array(multiply by 2 to get full rotation)
     period = [(1/i) * 2 for i in frequency]
+
+    for i in range(len(period)):
+        #modify the powers of powers array based on the corresponding period to reduce noise
+        if ((period[i] > 23 and period[i] < 25) or (period[i] > 47 and period[i] < 49)):
+            power[i] = power[i] * 0.6
+        if (period[i] < 1000):
+            power[i] = power[i] * 0.65
+        elif (period[i] > 5000):
+            power[i] = -1
 
     #return power array and period array
     return power, period, frequency, ssnamenr

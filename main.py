@@ -150,33 +150,9 @@ def printModuloGraph(objectNum):
   fig.show()
   fig.savefig('graph_' + str(objectNum) + '.png')
 
-# plotting the rotpers we calc over the ones already in snapshot 1
-# def printComparisonGraph(arrayOfPDs):
-#   for i in arrayOfPDs:
-#     trillingsPeriod = client["ztf"]["snapshot_1_derived_properties"].find({"ssnamenr": str(i.ssnamenr)}).rotper
-
-
-
-
-
-
-#     # plotting stuff
-#     plt.plot(period, power)
-#     plt.xlim(2, 50)
-#     plt.title('Periodogram')
-#     plt.xlabel('period')
-#     plt.ylabel('power')
-#     plt.grid(True)
-#     plt.show()
-
-
-
 
 # main actually running stuff
 # printModuloGraph(foundObject)
-
-
-
 if (__name__ == "__main__"):
 
   option = "compare"

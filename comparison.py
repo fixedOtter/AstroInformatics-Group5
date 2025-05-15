@@ -17,6 +17,8 @@ db = client["ztf"]
 #select the collection
 collection = db["snapshot_1_derived_properties"]
 
+snapshot = "1"
+
 #compare asteriods we tested with others
 def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = False):
 
@@ -37,7 +39,17 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
         
         #get the periods of the test data
         test_period = float(asteriod["period"])
-        data_period = float(data["rotper"])
+
+        data_period = 0
+        if (snapshot == "1"):
+            data_period = float(data["rotper"])
+        elif (snapshot == "2"):
+            data_period_test = data["periods"]["periods"]
+            min_chi2 = 1000000
+            for period in data_period_test:
+                if (period["chi2"] < min_chi2):
+                    min_chi2 = period["chi2"]
+                    data_period = float(period["period"])
 
         #add test periods to output arrays
         our_test_array.append(test_period)
@@ -51,7 +63,7 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
             max_period = data_period
 
     print("Our test periods size: ", len(our_test_array))
-    print("Snapshot 1 derived properties periods size: ", len(snapshot_test_array))
+    print(f"Snapshot {snapshot} derived properties periods size: ", len(snapshot_test_array))
     
     if (output_diagram == False):
         return our_test_array, snapshot_test_array, label_array
@@ -66,7 +78,7 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
     scatter = ax.scatter(our_test_array, snapshot_test_array)
     ax.set_title('Comparison of Asteroid Periods')
     ax.set_xlabel('Our Test Periods')
-    ax.set_ylabel('Snapshot 1 Derived Properties Periods')
+    ax.set_ylabel(f'Snapshot {snapshot} Derived Properties Periods')
     ax.set_xlim(0, int(max_period)+10)
     ax.set_ylim(0, int(max_period)+10)
     ax.grid(True)
