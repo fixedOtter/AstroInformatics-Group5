@@ -1,6 +1,6 @@
 #log files
-*.txt
 *.log
+*.out
 *.err
 scatter_plot.html
 

@@ -39,7 +39,8 @@ def run_comparison(slice_block):
 
   for item in test_asteroids:
     #print(item["ssnamenr"])
-    asteroids.append(int(item["ssnamenr"]))
+    if item != None:
+      asteroids.append(int(item["ssnamenr"]))
   
   lgc_time_start = time.time()
 
@@ -50,19 +51,20 @@ def run_comparison(slice_block):
   lgc_time_end = time.time()
   lgc_time = lgc_time_end - lgc_time_start
 
+  #add timings
   possible_SSRs_start = time.time()
   possible_SSRs = pSSR.check_for_SSR(out_array)
   possible_SSRs_end = time.time() - possible_SSRs_start
   
-  with open("potential_SSR.txt", "w") as f:
+  with open(f"potential_SSR_{slice_block}.log", "w") as f:
     for ssr in possible_SSRs:
-      f.write(str(ssr) + "\n")
+      f.write( ssr["ssnamenr"]  + " " + ssr["period"] + "\n")
 
 
   compare_time_start = time.time()
 
   #create comparison graph using snapshot_1_derived_properties
-  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True)
+  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True, slice_block)
 
   compare_time_end = time.time()
   compare_time = compare_time_end - compare_time_start
@@ -72,7 +74,7 @@ def run_comparison(slice_block):
   print("Possible SSRs time: ", possible_SSRs_end)
   print("Total time: ", lgc_time + compare_time + possible_SSRs_end)
 
-  with open("test_arrays.txt", "w") as f:
+  with open(f"test_arrays_{slice_block}.log", "w") as f:
     f.write(f"ssnamenr Our_Period Snaps_Period\n")
     for index in range(len(our_test_array)):
       f.write(f"{label_array[index]} {our_test_array[index]} {snapshot_test_array[index]}\n")
