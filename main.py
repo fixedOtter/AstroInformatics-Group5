@@ -30,11 +30,12 @@ def run_comparison(slice_block):
   db = client["ztf"]
 
   #select the collection
-  collection = db["snapshot_1_derived_properties"]
+  collection = db["snapshot_1"]
 
+  collection_der = db["snapshot_1_derived_properties"]
 
   #Get all test asteroids
-  test_asteroids = collection.find({}).limit(1000).skip(slice_block * 1000)
+  test_asteroids = collection_der.find({}).limit(1000).skip(slice_block * 1000)
 
   for item in test_asteroids:
     #print(item["ssnamenr"])

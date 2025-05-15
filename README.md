@@ -1,5 +1,13 @@
 # AstroInformatics-Group5
 Detect SSR's from ZTF Data in MongoDB
 
-### To find all potential SSR's and create comparison graph
+## installing stuff
+make sure you have anaconda then use conda to make an environment
+```
+conda env create
+```
 
+then you can install the dependancies for the programs
+```
+conda install pymongo pandas matplotlib numpy lombscar
+```
