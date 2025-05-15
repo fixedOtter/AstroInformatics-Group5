@@ -34,7 +34,7 @@ def run_comparison():
   collection_der = db["snapshot_1_derived_properties"]
 
   #Get all test asteroids
-  test_asteroids = collection_der.find({}).limit(500)
+  test_asteroids = collection.find({}).limit(5000)
 
   for item in test_asteroids:
     #print(item["ssnamenr"])

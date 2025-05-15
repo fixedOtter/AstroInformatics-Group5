@@ -17,7 +17,7 @@ db = client["ztf"]
 collection = db["snapshot 1"]
 
 #number of cpus to use
-num_cpus = 8
+num_cpus = 32
 
 if os.cpu_count() < num_cpus:
     num_cpus = os.cpu_count()
@@ -164,6 +164,3 @@ if __name__ == "__main__":
 
 # list of all possible slow rotators
 # Criterion  1-5K
-
-
-
