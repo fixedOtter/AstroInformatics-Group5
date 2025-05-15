@@ -30,7 +30,7 @@ def run_comparison(slice_block):
   db = client["ztf"]
 
   #select the collection
-  collection = db["snapshot 1"]
+  collection = db["snapshot_1_derived_properties"]
 
 
   #Get all test asteroids
@@ -38,7 +38,7 @@ def run_comparison(slice_block):
 
   for item in test_asteroids:
     #print(item["ssnamenr"])
-    asteroids.append(item["ssnamenr"])
+    asteroids.append(int(item["ssnamenr"]))
   
   lgc_time_start = time.time()
 
@@ -160,6 +160,7 @@ if (__name__ == "__main__"):
     print("Slice number not provided, exiting")
     sys.exit(1)
 
+  #gets the size of the slice block
   slice_block = int(sys.argv[1])
 
   option = "compare"
