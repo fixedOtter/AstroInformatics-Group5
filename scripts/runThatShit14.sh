@@ -2,7 +2,7 @@
 #SBATCH --job-name=calc-rotper14                   # the name of your job
 #SBATCH --output=/scratch/gj392/attempt14/output.txt	# this is the file your output and errors go
 #SBATCH --error=/scratch/gj392/attempt14/output.err	  # error file
-#SBATCH --time=1:00:00			              	# 20 min, shorter time, quicker start, max run time 
+#SBATCH --time=3:00:00			              	# 20 min, shorter time, quicker start, max run time 
 #SBATCH --chdir=/scratch/gj392/attempt14			        # your work directory
 #SBATCH --mem=32768                        # 2GB of memory
 #SBATCH --cpus-per-task=28			            # i guess -c 4 would do the same thing
