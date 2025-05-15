@@ -1,3 +1,4 @@
+
 from pymongo import MongoClient
 
 # uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
@@ -11,6 +12,8 @@ from pymongo import MongoClient
 
 
 
+
+
 def check_for_SSR(output_array):
     #Empty container for adding 
     Potential_SSR= []
@@ -21,9 +24,13 @@ def check_for_SSR(output_array):
         period = item["period"]
 
         if  1000 <= period <= 5000: 
+
             Potential_SSR.append(output_array)
     print(Potential_SSR)
-    
+
+            Potential_SSR.append({"ssnamenr": ssr, "period": period})
+    # print(Potential_SSR)
+
     return Potential_SSR
 
 
@@ -33,4 +40,4 @@ def check_for_SSR(output_array):
 check_for_SSR(output_array)
 
 
-    
+

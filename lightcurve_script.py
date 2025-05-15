@@ -9,7 +9,7 @@ import numpy as np
 pmCli = pymongo.MongoClient("mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018")
 
 
-asteroids = [339, 1000]
+asteroids = [99970]
 
 
 for i in asteroids:
@@ -75,5 +75,5 @@ for i in asteroids:
 
     fig.show()
 
-    fig.savefig('graph_' + str(i) + '.png')
+    # fig.savefig('graph_' + str(i) + '.png')
 
