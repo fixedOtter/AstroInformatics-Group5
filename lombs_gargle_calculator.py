@@ -17,7 +17,7 @@ db = client["ztf"]
 collection = db["snapshot 1"]
 
 #number of cpus to use
-num_cpus = 32
+num_cpus = 28
 
 if os.cpu_count() < num_cpus:
     num_cpus = os.cpu_count()
