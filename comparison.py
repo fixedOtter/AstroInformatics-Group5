@@ -16,7 +16,7 @@ client = MongoClient(uri)
 db = client["ztf"]
 
 #select the collection
-collection = db["snapshot_1_derived_properties"]
+collection_ss1_derived = db["snapshot_1_derived_properties"]
 
 
 ##
@@ -36,7 +36,7 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
     #loop through data to test
     for asteriod in test_ssnamenr_array:
         #find associated data
-        data = collection.find_one({"ssnamenr": str(asteriod["ssnamenr"])})
+        data = collection_ss1_derived.find_one({"ssnamenr": str(asteriod["ssnamenr"])})
         
         #check if data was in snapshot_1_derived_properties collecetion
         if (data == None):
