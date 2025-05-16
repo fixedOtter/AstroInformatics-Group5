@@ -13,7 +13,7 @@ conda install pymongo pandas matplotlib numpy lombscar
 
 ## To begin
 ```
-python main.py section
+python main.py snapshot section
 ```
 where secction is a integer that corresponds to a 1000 sized slice that the program will analyze from the database
 
