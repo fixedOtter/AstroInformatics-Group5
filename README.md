@@ -32,7 +32,7 @@ This file plots phase versus absolute magnitude in concordance with our derived 
 ### potential_ssr.py 
 This checks the period information of each asteroid in the database and adds them to an array if they meet the criteria
 
-### app.py
+### app.ipynb
 This code places the periodogram and light curves plots side by side for comparison 
 
 # Software used 
