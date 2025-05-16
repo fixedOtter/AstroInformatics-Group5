@@ -107,7 +107,7 @@ def get_period_and_power_array(ssnamenr):
     #1 hour
     p_min = .0416
     #5000 hours
-    p_max = 4166.6#416.66
+    p_max = 4166.6
     f_min = 1/p_max
     f_max = 1/p_min
 
