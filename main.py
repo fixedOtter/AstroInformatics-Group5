@@ -80,6 +80,15 @@ def run_comparison(slice_block, snapshot):
     for index in range(len(our_test_array)):
       f.write(f"{label_array[index]} {our_test_array[index]} {snapshot_test_array[index]}\n")
 
+
+  #save our periods and snapshot periods to a file
+  with open(f"data/program_output/results_block_{slice_block}.log", "w") as f:
+    f.write(f"For snapshot {snapshot}\n")
+    f.write(f"For slice block {slice_block}\n")
+    f.write(f"Asteroids tested: {len(asteroids)}\n")
+    f.write(f"Number of possible SSR's: {len(possible_SSRs)}\n")
+
+
   return
 
 
