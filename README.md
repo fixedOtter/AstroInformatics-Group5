@@ -25,6 +25,9 @@ The file that pulls in our various scripts for data anaylsis and the file that q
 ### lombs_gargle_calculator.py
 This file derives our period vs. power periodograms for us to determine the cycle of our potential slow rotators. 
 
+### comparison.py
+Produces the comparison graphs for the data we produce in comparison to the data on the SNAPS database.
+
 ### lightcurve_script.py 
 This file plots phase versus absolute magnitude in concordance with our derived periods from our Lomb Scargle algorithm 
 
