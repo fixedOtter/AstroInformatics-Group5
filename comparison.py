@@ -15,9 +15,9 @@ client = MongoClient(uri)
 db = client["ztf"]
 
 #select the collection
-collection = db["snapshot_1_derived_properties"]
+collection = db["snapshot_2_derived_properties"]
 
-snapshot = "1"
+snapshot = "2"
 
 #compare asteriods we tested with others
 def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = False):
@@ -44,12 +44,14 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
         if (snapshot == "1"):
             data_period = float(data["rotper"])
         elif (snapshot == "2"):
-            data_period_test = data["periods"]["periods"]
-            min_chi2 = 1000000
-            for period in data_period_test:
-                if (period["chi2"] < min_chi2):
-                    min_chi2 = period["chi2"]
-                    data_period = float(period["period"])
+            data_period = float(data["periods"]["periods"][4]["period"])            
+
+            # data_period_test = data["periods"]["periods"]
+            # min_chi2 = 1000000
+            # for period in data_period_test:
+            #     if (period["chi2"] < min_chi2):
+            #         min_chi2 = period["chi2"]
+            #         data_period = float(period["period"])
 
         #add test periods to output arrays
         our_test_array.append(test_period)
@@ -63,7 +65,7 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
             max_period = data_period
 
     print("Our test periods size: ", len(our_test_array))
-    print(f"Snapshot {snapshot} derived properties periods size: ", len(snapshot_test_array))
+    print(f"Snapshot {snapshot} derived properties periods (unmasked) size: ", len(snapshot_test_array))
     
     if (output_diagram == False):
         return our_test_array, snapshot_test_array, label_array
@@ -82,7 +84,10 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
     ax.set_xlim(0, int(max_period)+10)
     ax.set_ylim(0, int(max_period)+10)
     ax.grid(True)
+    ax.set_xscale('log')
+    ax.set_yscale('log')
 
+    fig.savefig(f"scatter_plot_{snapshot}.png")
 
     tooltip = mpld3.plugins.PointLabelTooltip(scatter, labels=label_array)
     mpld3.plugins.connect(fig, tooltip)

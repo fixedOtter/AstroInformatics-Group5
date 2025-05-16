@@ -14,13 +14,13 @@ client = MongoClient(uri)
 db = client["ztf"]
 
 #select the collection
-collection = db["snapshot 1"]
+collection = db["snapshot 2"]
 
 #number of cpus to use
 num_cpus = 28
 
-if os.cpu_count() < num_cpus:
-    num_cpus = os.cpu_count()
+# if os.cpu_count() < num_cpus:
+#     num_cpus = os.cpu_count()
 
 #function to get the ssnamenr and period for a given list of asteroids
 def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
@@ -53,8 +53,9 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
 def get_period_and_power_array(ssnamenr):
     print("Calculating period for ssnamenr: ", ssnamenr)
     #get all data associated with asteroid
-    data = collection.find({"ssnamenr": ssnamenr})
+    data = collection.find({"ssnamenr": str(ssnamenr)})
 
+    ssnamenr = str(ssnamenr)
     if (data == None):
         print("No data found for ssnamenr: ", ssnamenr)
         return None, None, None, ssnamenr

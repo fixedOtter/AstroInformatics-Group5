@@ -32,10 +32,10 @@ def run_comparison(slice_block):
   #select the collection
   collection = db["snapshot_1"]
 
-  collection_der = db["snapshot_1_derived_properties"]
+  collection_der = db["snapshot_2_derived_properties"]
 
   #Get all test asteroids
-  blocksize = 2000
+  blocksize = 100
   test_asteroids = collection_der.find({}).limit(blocksize).skip(slice_block * blocksize)
 
   for item in test_asteroids:

@@ -4,7 +4,7 @@
 #SBATCH --error=/scratch/gj392/attempt9/output.err	  # error file
 #SBATCH --time=3:00:00			              	# 20 min, shorter time, quicker start, max run time 
 #SBATCH --chdir=/scratch/gj392/attempt9			        # your work directory
-#SBATCH --mem=32768                        # 2GB of memory
+#SBATCH --mem=16384                        # 2GB of memory
 #SBATCH --cpus-per-task=28			            # i guess -c 4 would do the same thing
 
 # pulling in anaconda module & then activating the conda environment
