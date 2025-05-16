@@ -167,11 +167,11 @@ if (__name__ == "__main__"):
     print("snapshot: 1 or 2")
     print("defaulting to slice 0")
     print("defaulting to snapshot 1")
-
-  #gets the snapshot number
-  snapshot = sys.argv[1]
-  #gets the size of the slice block
-  slice_block = int(sys.argv[2])
+  else:
+    #gets the snapshot number
+    snapshot = sys.argv[1]
+    #gets the size of the slice block
+    slice_block = int(sys.argv[2])
 
   print("Snapshot: ", snapshot)
   print("Slice Block: ", slice_block)
