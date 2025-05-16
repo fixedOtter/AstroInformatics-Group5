@@ -22,8 +22,13 @@ num_cpus = 32
 if os.cpu_count() < num_cpus:
     num_cpus = os.cpu_count()
 
+#set if anti-aliasing is used
+anti_aliasing = True
+
 #function to get the ssnamenr and period for a given list of asteroids
-def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
+def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
+
+    collection = db[f"snapshot {snapshot}"]
 
     out_array = []
     #get the number of cpus
@@ -31,7 +36,7 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
     # create a thread pool
     with ProcessPoolExecutor(num_cpus) as pool:
         # call the function for each item concurrently
-        for result in pool.map(get_period_and_power_array, asteriods_ssnamenr):
+        for result in pool.map(get_period_and_power_array, asteriods_ssnamenr, snapshot):
             power_array, period_array, _, ssnamenr = result
             
             if (power_array is None or period_array is None):
@@ -50,8 +55,12 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
     return out_array
 
 #returns the period and power array for a given ssnamenr
-def get_period_and_power_array(ssnamenr):
+def get_period_and_power_array(ssnamenr, snapshot = "1"):
     print("Calculating period for ssnamenr: ", ssnamenr)
+    if (snapshot == "2"):
+        ssnamenr = str(ssnamenr)
+    collection = db[f"snapshot {snapshot}"]
+
     #get all data associated with asteroid
     data = collection.find({"ssnamenr": ssnamenr})
 
@@ -120,18 +129,20 @@ def get_period_and_power_array(ssnamenr):
     #set period array(multiply by 2 to get full rotation)
     period = [(1/i) * 2 for i in frequency]
 
-    for i in range(len(period)):
-        #modify the powers of powers array based on the corresponding period to reduce noise
-        if ((period[i] > 23 and period[i] < 25) or (period[i] > 47 and period[i] < 49)):
-            power[i] = power[i] * 0.6
-        if (period[i] < 1000):
-            power[i] = power[i] * 0.65
-        elif (period[i] > 5000):
-            power[i] = -1
+    if (anti_aliasing):
+        for i in range(len(period)):
+            #modify the powers of powers array based on the corresponding period to reduce noise
+            if ((period[i] > 23 and period[i] < 25) or (period[i] > 47 and period[i] < 49)):
+                power[i] = power[i] * 0.6
+            if (period[i] < 1000):
+                power[i] = power[i] * 0.65
+            elif (period[i] > 5000):
+                power[i] = -1
 
     #return power array and period array
     return power, period, frequency, ssnamenr
 
+#create periodogram plot for testing
 def createPlot(ssnamenr, db, max_period = -1):
     #get the period and power array for a given ssnamenr
     power, period, _ = get_period_and_power_array(ssnamenr, db)
@@ -158,7 +169,9 @@ if __name__ == "__main__":
     #get the period and power array for each asteroid
     out_array = get_ssr_candidate_ssnamenr_and_period(astroids)
 
+    #print the ssnamenr and period for each asteroid
     print(out_array)
+    #create a plot for each asteroid
     createPlot(astroids[0], db, out_array[0]["period"])
 
 
