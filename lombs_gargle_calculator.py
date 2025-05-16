@@ -16,14 +16,27 @@ db = client["ztf"]
 #select the collection
 collection = db["snapshot 1"]
 
+snapshot = "1"
+
 #number of cpus to use
-num_cpus = 32
+num_cpus = 6
 
 if os.cpu_count() < num_cpus:
     num_cpus = os.cpu_count()
 
+#set if anti-aliasing is used
+anti_aliasing = True
+
 #function to get the ssnamenr and period for a given list of asteroids
-def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
+##
+# This function takes a list of ssnamenr and returns an out_array
+# with the ssnamenr and period for each asteroid
+##
+def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
+    
+    snapshot = str(snapshot)
+    collection = db[f"snapshot {snapshot}"]
+    print("Calculating period for ssnamenr: ", asteriods_ssnamenr)
 
     out_array = []
     #get the number of cpus
@@ -52,6 +65,12 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr):
 #returns the period and power array for a given ssnamenr
 def get_period_and_power_array(ssnamenr):
     print("Calculating period for ssnamenr: ", ssnamenr)
+
+    #set the correct snapshot numbers
+    if (snapshot == "2"):
+        ssnamenr = str(ssnamenr)
+    collection = db[f"snapshot {snapshot}"]
+
     #get all data associated with asteroid
     data = collection.find({"ssnamenr": ssnamenr})
 
@@ -94,7 +113,7 @@ def get_period_and_power_array(ssnamenr):
         t_times.append(t_times_red[i])
         y_magnitudes.append(y_magnitudes_red[i])
 
-    #find smallest time
+    #find smallest time to zero out the times
     small_time = min(t_times)
 
     #subtract the smallest time from all times
@@ -120,20 +139,36 @@ def get_period_and_power_array(ssnamenr):
     #set period array(multiply by 2 to get full rotation)
     period = [(1/i) * 2 for i in frequency]
 
-    for i in range(len(period)):
-        #modify the powers of powers array based on the corresponding period to reduce noise
-        if ((period[i] > 23 and period[i] < 25) or (period[i] > 47 and period[i] < 49)):
-            power[i] = power[i] * 0.6
-        if (period[i] < 1000):
-            power[i] = power[i] * 0.65
-        elif (period[i] > 5000):
-            power[i] = -1
+    ##
+    # This code is used to try and do anti-aliasing, it involves modifying the power array based on the period
+    # periods which tend to have high aliasing have their power reduced, such as 24 and 48 hours
+    # Along with this, periods lower then 1000 hours have their power reduced to a lesser degree
+    # This is done because the calculations of the power may overestimate the power for earlier periods
+    # This however could not actually be a problem and can be removed if it is deemed unnecessary
+    # Then there are a few cases of possible overestimation of the power for periods greater then 5000 hours
+    # so any periods higher then that are set to -1 and subsiquently ignored
+    # This value should be modified when testing for periods greater then 5000 hours
+    # The values of 0.6 and 0.9 are arbitrary and can be modified to test for different values
+    # additional checks can be added for other periods with high aliasing that are found
+    ##
+
+    if (anti_aliasing):
+        for i in range(len(period)):
+            #modify the powers of powers array based on the corresponding period to reduce noise
+            if ((period[i] > 23 and period[i] < 25) or (period[i] > 47 and period[i] < 49)):
+                power[i] = power[i] * 0.6
+            if (period[i] < 1000):
+                power[i] = power[i] * 0.9
+            elif (period[i] > 5000):
+                power[i] = -1
 
     #return power array and period array
     return power, period, frequency, ssnamenr
 
-def createPlot(ssnamenr, db, max_period = -1):
+#create periodogram plot for testing
+def createPlot(ssnamenr, db, max_period = -1, in_snapshot = "1"):
     #get the period and power array for a given ssnamenr
+    snapshot = str(in_snapshot)
     power, period, _ = get_period_and_power_array(ssnamenr, db)
 
     #find the max power and period
@@ -150,6 +185,10 @@ def createPlot(ssnamenr, db, max_period = -1):
     
     plt.show()
 
+##
+# This is meant to be used for testing the code
+# To get a periodogram for a given ssnamenr
+##
 if __name__ == "__main__":
     
     #This is just test files
@@ -158,8 +197,10 @@ if __name__ == "__main__":
     #get the period and power array for each asteroid
     out_array = get_ssr_candidate_ssnamenr_and_period(astroids)
 
+    #print the ssnamenr and period for each asteroid
     print(out_array)
-    createPlot(astroids[0], db, out_array[0]["period"])
+    #create a plot for each asteroid
+    createPlot(astroids[0], db, out_array[0]["period"], snapshot)
 
 
 # list of all possible slow rotators

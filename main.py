@@ -18,10 +18,8 @@ import potential_SSR as pSSR
 uri = "mongodb://group5:IelC3eVkLz%2BMfPlGAKel4g%3D%3D@cmp4818.computers.nau.edu:27018"
 client = MongoClient(uri)
 
-foundObject = 1865
 
-
-def run_comparison(slice_block):
+def run_comparison(slice_block, snapshot):
 
   #test asteroids
   asteroids = []
@@ -30,9 +28,9 @@ def run_comparison(slice_block):
   db = client["ztf"]
 
   #select the collection
-  collection = db["snapshot_1"]
+  collection = db[f"snapshot {snapshot}"]
 
-  collection_der = db["snapshot_1_derived_properties"]
+  collection_der = db[f"snapshot_{snapshot}_derived_properties"]
 
   #Get all test asteroids
   test_asteroids = collection_der.find({}).limit(1000).skip(slice_block * 1000)
@@ -45,7 +43,7 @@ def run_comparison(slice_block):
   lgc_time_start = time.time()
 
   #get output array of the periods of inputted asteroids using snapshot 1
-  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids)
+  out_array = lgc.get_ssr_candidate_ssnamenr_and_period(asteroids, snapshot)
   # print("Out array: ", out_array)
 
   lgc_time_end = time.time()
@@ -56,25 +54,28 @@ def run_comparison(slice_block):
   possible_SSRs = pSSR.check_for_SSR(out_array)
   possible_SSRs_end = time.time() - possible_SSRs_start
   
-  with open(f"potential_SSR_{slice_block}.log", "w") as f:
+  #print the possible SSRs
+  with open(f"data/program_output/potential_SSR_{slice_block}.log", "w") as f:
     for ssr in possible_SSRs:
        f.write(str(ssr) + "\n")
 
-
+  #add timings
   compare_time_start = time.time()
 
   #create comparison graph using snapshot_1_derived_properties
-  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True, slice_block)
+  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True, snapshot)
 
   compare_time_end = time.time()
   compare_time = compare_time_end - compare_time_start
 
+  #print out timings
   print("LombScargle time: ", lgc_time)
   print("Comparison time: ", compare_time)
   print("Possible SSRs time: ", possible_SSRs_end)
   print("Total time: ", lgc_time + compare_time + possible_SSRs_end)
 
-  with open(f"test_arrays_{slice_block}.log", "w") as f:
+  #save our periods and snapshot periods to a file
+  with open(f"data/program_output/test_arrays_{slice_block}.log", "w") as f:
     f.write(f"ssnamenr Our_Period Snaps_Period\n")
     for index in range(len(our_test_array)):
       f.write(f"{label_array[index]} {our_test_array[index]} {snapshot_test_array[index]}\n")
@@ -82,7 +83,7 @@ def run_comparison(slice_block):
   return
 
 
-#function to print the graph
+#function to print the light curve graph
 def printModuloGraph(objectNum):
 
   cursorObj = client["ztf"]["snapshot 1"].find({"ssnamenr": objectNum})
@@ -158,20 +159,31 @@ def printModuloGraph(objectNum):
 # printModuloGraph(foundObject)
 if (__name__ == "__main__"):
   slice_block = 0
+  snapshot = "1"
 
-  if (len(sys.argv) != 2):
-    print("Slice number not provided, exiting")
-    sys.exit(1)
+  if (len(sys.argv) != 3):
+    print("Usage: python main.py <snapshot> <slice_block>")
+    print("slice_block size: 1000")
+    print("snapshot: 1 or 2")
+    print("defaulting to slice 0")
+    print("defaulting to snapshot 1")
+  else:
+    #gets the snapshot number
+    snapshot = sys.argv[1]
+    #gets the size of the slice block
+    slice_block = int(sys.argv[2])
 
-  #gets the size of the slice block
-  slice_block = int(sys.argv[1])
+  print("Snapshot: ", snapshot)
+  print("Slice Block: ", slice_block)
 
   option = "compare"
 
   if option == "compare":
-    run_comparison(slice_block)
+    #run the comparison and periodogram code for the given slice block of a snapshot
+    run_comparison(slice_block, snapshot)
   elif option == "graph":
-  # main actually running stuff
-    printModuloGraph(foundObject)
+    #object to create light curve graph for
+    foundObject = 1865
+    printModuloGraph(1865)
 
     client.close()
