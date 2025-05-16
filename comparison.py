@@ -62,6 +62,7 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
         our_test_array.append(test_period)
         snapshot_test_array.append(data_period)
         label_array.append(asteriod["ssnamenr"])
+        print(f"Found period for ssnamenr: {asteriod['ssnamenr']} with period: {test_period} and snapshot period: {data_period}")
 
         #check if the period is greater than the max period
         if (test_period > max_period):

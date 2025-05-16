@@ -36,11 +36,13 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
     
     snapshot = str(snapshot)
     collection = db[f"snapshot {snapshot}"]
-    print("Calculating period for ssnamenr: ", asteriods_ssnamenr)
+    #only print if the length of the array is less then 20
+    if (len(asteriods_ssnamenr) < 20):
+        print("Calculating period for ssnamenr:", asteriods_ssnamenr)
 
     out_array = []
     #get the number of cpus
-    print("Number of CPUs: ", num_cpus)
+    print("Number of CPUs for lombs-scargle:", num_cpus)
     # create a thread pool
     with ProcessPoolExecutor(num_cpus) as pool:
         # call the function for each item concurrently
@@ -48,7 +50,7 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
             power_array, period_array, _, ssnamenr = result
             
             if (power_array is None or period_array is None):
-                print("No data found for ssnamenr: ", ssnamenr)
+                print("No data found for ssnamenr:", ssnamenr)
                 continue
 
             #find the max power and period
@@ -57,14 +59,14 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
 
             #add the max period with the associated ssnamenr to the output array
             out_array.append({"ssnamenr": ssnamenr, "period": float(max_period)})
-            print("Fully calculated period for ssnamenr: ", ssnamenr)
+            print("Fully calculated period for ssnamenr:", ssnamenr, "period:", max_period)
 
     #return the out_array
     return out_array
 
 #returns the period and power array for a given ssnamenr
 def get_period_and_power_array(ssnamenr):
-    print("Calculating period for ssnamenr: ", ssnamenr)
+    print("Calculating period for ssnamenr:", ssnamenr)
 
     #set the correct snapshot numbers
     if (snapshot == "2"):
@@ -72,10 +74,12 @@ def get_period_and_power_array(ssnamenr):
     collection = db[f"snapshot {snapshot}"]
 
     #get all data associated with asteroid
+    print("Getting data for ssnamenr:", ssnamenr)
     data = collection.find({"ssnamenr": ssnamenr})
+    print("Data found for ssnamenr:", ssnamenr)
 
     if (data == None):
-        print("No data found for ssnamenr: ", ssnamenr)
+        print("No data found for ssnamenr:", ssnamenr)
         return None, None, None, ssnamenr
 
     #initialize arrays
@@ -134,6 +138,7 @@ def get_period_and_power_array(ssnamenr):
     frequency = np.linspace(f_min, f_max, 1000000)
 
     #calculate power using LobScargle
+    print("Running lombs-scargle on asteroid:", ssnamenr)
     power = LombScargle(t_times, y_magnitudes).power(frequency)
 
     #set period array(multiply by 2 to get full rotation)
@@ -162,6 +167,7 @@ def get_period_and_power_array(ssnamenr):
             elif (period[i] > 5000):
                 power[i] = -1
 
+    print("Finished running lombs-scargle on asteroid:", ssnamenr)
     #return power array and period array
     return power, period, frequency, ssnamenr
 
