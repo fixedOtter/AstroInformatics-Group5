@@ -28,6 +28,10 @@ if os.cpu_count() < num_cpus:
 anti_aliasing = True
 
 #function to get the ssnamenr and period for a given list of asteroids
+##
+# This function takes a list of ssnamenr and returns an out_array
+# with the ssnamenr and period for each asteroid
+##
 def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
     
     snapshot = str(snapshot)
@@ -61,6 +65,8 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
 #returns the period and power array for a given ssnamenr
 def get_period_and_power_array(ssnamenr):
     print("Calculating period for ssnamenr: ", ssnamenr)
+
+    #set the correct snapshot numbers
     if (snapshot == "2"):
         ssnamenr = str(ssnamenr)
     collection = db[f"snapshot {snapshot}"]
@@ -107,7 +113,7 @@ def get_period_and_power_array(ssnamenr):
         t_times.append(t_times_red[i])
         y_magnitudes.append(y_magnitudes_red[i])
 
-    #find smallest time
+    #find smallest time to zero out the times
     small_time = min(t_times)
 
     #subtract the smallest time from all times
@@ -179,6 +185,10 @@ def createPlot(ssnamenr, db, max_period = -1, in_snapshot = "1"):
     
     plt.show()
 
+##
+# This is meant to be used for testing the code
+# To get a periodogram for a given ssnamenr
+##
 if __name__ == "__main__":
     
     #This is just test files

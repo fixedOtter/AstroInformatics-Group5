@@ -19,8 +19,11 @@ db = client["ztf"]
 collection = db["snapshot_1_derived_properties"]
 
 
-#compare asteriods we tested with others
-def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = False, slice_block = 0, snapshot = "1"):
+##
+# Function takes in the ssnamenr out_array and finds the associated period in the snapshot database 
+# It then create 2 graphs, one with a linear scale and one with a log scale and outputs them to the data/program_output directory
+##
+def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = False, snapshot = "1"):
 
     #create arrays
     our_test_array = []
@@ -43,8 +46,10 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
         test_period = float(asteriod["period"])
 
         data_period = 0
+        #finds the period of the data for snapshot 1
         if (snapshot == "1"):
             data_period = float(data["rotper"])
+        #finds the period of the data for snapshot 2
         elif (snapshot == "2"):
             data_period_test = data["periods"]["periods"]
             min_chi2 = 1000000
@@ -133,6 +138,9 @@ def create_comparison_graph(our_test_array, snapshot_test_array, max_period, lab
     fig.savefig(f"data/program_output/scatter_plot_{snapshot}_log_scale.png")
 
 
+##
+# Read the test array file and return the contents with split lines
+##
 def read_test_array_file(file_name):
     # Read the file and return the contents
     with open(file_name, "r") as file:
@@ -145,6 +153,12 @@ def read_test_array_file(file_name):
     del lines[0]  # Remove the first line of labels
     return lines
 
+##
+# This part is to combie data from multiple files into one using the read_test_array_file function
+# and then create a comparison graph using the combined data
+# The files are in the format {source_dicrectory}\data\monsoon output\attempt{index}\test_arrays.txt
+# You should modify the directory variable to point to the correct location of your files
+##
 if (__name__ == "__main__"):
     snapshot = "1"
     ##
