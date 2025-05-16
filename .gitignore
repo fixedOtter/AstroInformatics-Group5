@@ -4,6 +4,9 @@
 *.err
 scatter_plot.html
 
+#data files
+attempt*
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
