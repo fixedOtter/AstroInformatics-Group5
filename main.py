@@ -63,7 +63,7 @@ def run_comparison(slice_block, snapshot):
   compare_time_start = time.time()
 
   #create comparison graph using snapshot_1_derived_properties
-  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True, slice_block, snapshot)
+  our_test_array, snapshot_test_array, label_array = compare.compare_ssnamenr_asteriod_periods(out_array, True, snapshot)
 
   compare_time_end = time.time()
   compare_time = compare_time_end - compare_time_start
