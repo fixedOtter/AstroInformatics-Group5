@@ -20,7 +20,7 @@ collection = db["snapshot_1_derived_properties"]
 snapshot = "1"
 
 #compare asteriods we tested with others
-def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = False):
+def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = False, slice_block = 0):
 
     #create arrays
     our_test_array = []
@@ -88,7 +88,7 @@ def compare_ssnamenr_asteriod_periods(test_ssnamenr_array, output_diagram = Fals
     mpld3.plugins.connect(fig, tooltip)
 
     # Save the figure as an HTML file
-    mpld3.save_html(fig, "scatter_plot.html")
+    mpld3.save_html(fig, f"scatter_plot_{slice_block}.html")
 
     return our_test_array, snapshot_test_array, label_array
         

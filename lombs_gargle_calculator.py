@@ -17,7 +17,7 @@ db = client["ztf"]
 collection = db["snapshot 1"]
 
 #number of cpus to use
-num_cpus = 8
+num_cpus = 32
 
 if os.cpu_count() < num_cpus:
     num_cpus = os.cpu_count()
@@ -107,7 +107,7 @@ def get_period_and_power_array(ssnamenr):
     #1 hour
     p_min = .0416
     #5000 hours
-    p_max = 4166.6#416.66
+    p_max = 4166.6
     f_min = 1/p_max
     f_max = 1/p_min
 
@@ -164,6 +164,3 @@ if __name__ == "__main__":
 
 # list of all possible slow rotators
 # Criterion  1-5K
-
-
-
