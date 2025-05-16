@@ -16,8 +16,10 @@ db = client["ztf"]
 #select the collection
 collection = db["snapshot 1"]
 
+snapshot = "1"
+
 #number of cpus to use
-num_cpus = 32
+num_cpus = 6
 
 if os.cpu_count() < num_cpus:
     num_cpus = os.cpu_count()
@@ -27,8 +29,10 @@ anti_aliasing = True
 
 #function to get the ssnamenr and period for a given list of asteroids
 def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
-
+    
+    snapshot = str(snapshot)
     collection = db[f"snapshot {snapshot}"]
+    print("Calculating period for ssnamenr: ", asteriods_ssnamenr)
 
     out_array = []
     #get the number of cpus
@@ -36,7 +40,7 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
     # create a thread pool
     with ProcessPoolExecutor(num_cpus) as pool:
         # call the function for each item concurrently
-        for result in pool.map(get_period_and_power_array, asteriods_ssnamenr, snapshot):
+        for result in pool.map(get_period_and_power_array, asteriods_ssnamenr):
             power_array, period_array, _, ssnamenr = result
             
             if (power_array is None or period_array is None):
@@ -55,7 +59,7 @@ def get_ssr_candidate_ssnamenr_and_period(asteriods_ssnamenr, snapshot = "1"):
     return out_array
 
 #returns the period and power array for a given ssnamenr
-def get_period_and_power_array(ssnamenr, snapshot = "1"):
+def get_period_and_power_array(ssnamenr):
     print("Calculating period for ssnamenr: ", ssnamenr)
     if (snapshot == "2"):
         ssnamenr = str(ssnamenr)
@@ -143,8 +147,9 @@ def get_period_and_power_array(ssnamenr, snapshot = "1"):
     return power, period, frequency, ssnamenr
 
 #create periodogram plot for testing
-def createPlot(ssnamenr, db, max_period = -1):
+def createPlot(ssnamenr, db, max_period = -1, in_snapshot = "1"):
     #get the period and power array for a given ssnamenr
+    snapshot = str(in_snapshot)
     power, period, _ = get_period_and_power_array(ssnamenr, db)
 
     #find the max power and period
@@ -172,7 +177,7 @@ if __name__ == "__main__":
     #print the ssnamenr and period for each asteroid
     print(out_array)
     #create a plot for each asteroid
-    createPlot(astroids[0], db, out_array[0]["period"])
+    createPlot(astroids[0], db, out_array[0]["period"], snapshot)
 
 
 # list of all possible slow rotators
